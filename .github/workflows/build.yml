@@ -19,8 +19,12 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Accept Android SDK licenses (SDK is preinstalled on runner)
+        run: |
+          SDKM=$(ls "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager 2>/dev/null | head -n1)
+          echo "Using sdkmanager: $SDKM"
+          yes | "$SDKM" --licenses > /dev/null || true
+          "$SDKM" "platforms;android-34" "build-tools;34.0.0" || true
 
       - name: Setup Gradle 8.7
         uses: gradle/actions/setup-gradle@v4
